@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Manifest — Dynamic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== THEME (Light = default) ===== */
+    :root{
+      --paper:#f0f0f0;
+      --ink:#1b1b1b;             /* page text */
+      --muted:#6f7480;
+      --ink-sticky:#1b1b1b;      /* ALWAYS dark text on sticky */
+
+      --blue:#4285F4; --red:#DB4437; --yellow:#F4B400; --green:#0F9D58;
+      --purple:#a142f4; --teal:#10b981;
+
+      /* defaults; overridden by [data-note] below */
+      --sticky:#fff9c4; --dash:#d8cc79;
+      --meter-bg:#f7efb8; --meter-br:#e7dc93;
+
+      --shadow:0 6px 18px rgba(0,0,0,.22);
+    }
+    :root[data-theme="dark"]{
+      --paper:#0e0f12;
+      --ink:#e8eaed;
+      --muted:#9aa0a6;
+      --shadow:0 6px 22px rgba(0,0,0,.6);
+      --ink-sticky:#1b1b1b;      /* keep sticky text readable */
+      --meter-br: rgba(255,255,255,.18);
+    }
+
+    /* ===== STICKY COLOR PACKS ===== */
+    .sticky[data-note="yellow"] { --sticky:#fff9c4; --dash:#d8cc79; --meter-bg:#f7efb8; --meter-br:#e7dc93; }
+    .sticky[data-note="mint"]   { --sticky:#d5f5e3; --dash:#9cd9c1; --meter-bg:#e6fbf3; --meter-br:#c8eedf; }
+    .sticky[data-note="sky"]    { --sticky:#dbefff; --dash:#9cc6f0; --meter-bg:#eef7ff; --meter-br:#c8def7; }
+    .sticky[data-note="rose"]   { --sticky:#ffe0e6; --dash:#e9a7b2; --meter-bg:#fff0f3; --meter-br:#f3c5cd; }
+    .sticky[data-note="lav"]    { --sticky:#efe3ff; --dash:#c7b0f3; --meter-bg:#f7efff; --meter-br:#ddccfb; }
+
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto}
+
+    .sticky{width:340px;background:var(--sticky);color:var(--ink-sticky);
+            border-radius:12px;box-shadow:var(--shadow);padding:12px}
+    .hidden{display:none}
+
+    .hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+    .lh .title{
+      font-weight:800;font-size:18px;
+      background:linear-gradient(to right,#4285F4,#DB4437,#F4B400,#0F9D58);
+      background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent
+    }
+    .lh .tag{font-size:12px;color:var(--muted)}
+    .actions-top{display:flex;gap:6px}
+    .mini{border:1px solid var(--dash);background:transparent;color:var(--ink-sticky);
+          border-radius:8px;padding:6px 8px;cursor:pointer}
+    .mini.danger{border-color:#c66;color:#b00}
+
+    .add label{font-weight:700}
+    .row{display:flex;gap:6px;margin-top:4px}
+    .row input{flex:1;padding:8px;border:1px dashed var(--dash);border-radius:8px;background:transparent;color:var(--ink-sticky)}
+    .btn{width:36px;border:1px solid var(--dash);border-radius:8px;background:linear-gradient(#fff7a4,#ffe66a);cursor:pointer;color:#222}
+    :root[data-theme="dark"] .btn{color:var(--ink-sticky);background:linear-gradient(#2a2c36,#242633)}
+
+    .sect-title{font-weight:800;margin:10px 0 6px}
+    .cat{border-top:1px dashed var(--dash);padding-top:6px;margin-top:6px}
+    .cat summary{display:flex;align-items:center;gap:8px;cursor:pointer;justify-content:space-between}
+    .count{font-size:12px;color:var(--muted)}
+    .bar{height:8px;border-radius:999px;background:var(--meter-bg);border:1px solid var(--meter-br);overflow:hidden;margin:6px 0 2px}
+    .fill{height:100%;width:0;border-radius:999px;transition:width .35s ease}
+
+    .tasks{list-style:none;margin:4px 0 0;padding:0}
+    .task{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dashed rgba(0,0,0,.06)}
+    .task:last-child{border-bottom:none}
+    .task .title{color:var(--ink-sticky);font-weight:600;word-break:break-word}
+    .actions{display:flex;gap:4px}
+    .btn-mini{font-size:11px;border:1px solid var(--dash);border-radius:6px;background:#fff7a4;padding:2px 6px;cursor:pointer;color:#222}
+    :root[data-theme="dark"] .btn-mini{color:var(--ink-sticky);background:#2a2c36}
+    .icon-btn{display:inline-flex;align-items:center;gap:4px}
+    .icon{width:12px;height:12px;display:inline-block}
+    .icon-pen::before{content:"✎"} .icon-check::before{content:"✓"} .icon-x::before{content:"✗"} .icon-skip::before{content:"↷"}
+
+    .chip{font-size:11px;border:1px solid var(--dash);border-radius:999px;padding:2px 6px;margin-left:6px;background:rgba(0,0,0,.06);color:var(--ink-sticky)}
+    :root[data-theme="dark"] .chip{background:rgba(255,255,255,.06)}
+
+    .sticky.flash{animation:flash 420ms ease-out}
+    @keyframes flash{0%{box-shadow:0 0 0 0 rgba(244,180,0,.45)}100%{box-shadow:var(--shadow)}}
+
+    #historyList details{border-top:1px dashed var(--dash);padding-top:6px;margin-top:6px}
+    .hist-task{display:flex;justify-content:space-between;gap:6px;padding:2px 0}
+    .hist-task .meta{color:var(--muted);font-size:12px}
+
+    /* Tomorrow strip */
+    #tomorrow{border:1px dashed var(--dash);border-radius:10px;padding:6px;margin:6px 0}
+    #tomorrow .label{font-weight:700;margin-bottom:4px}
+    #tomorrow .pill{display:inline-block;border:1px solid var(--dash);border-radius:999px;padding:3px 8px;margin:2px;background:#fff7a4;color:#222}
+    :root[data-theme="dark"] #tomorrow .pill{background:#2a2c36;color:var(--ink-sticky)}
+  </style>
+</head>
+<body>
+  <div class="sticky" id="sticky" data-note="yellow">
+    <header class="hdr">
+      <div class="lh">
+        <div class="title">Manifest</div>
+        <div class="tag">Tiny steps, big wins.</div>
+      </div>
+      <div class="actions-top">
+        <button id="historyBtn" class="mini">History</button>
+        <button id="colorBtn" class="mini" title="Change sticky color">🌈</button>
+        <button id="themeBtn" class="mini" title="Toggle theme">🌓</button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main id="mainView">
+      <section class="add">
+        <label>Add Task</label>
+        <div class="row">
+          <input id="taskInput" type="text" placeholder="e.g., Pay bill tomorrow 9am">
+          <button id="addBtn" class="btn">+</button>
+        </div>
+      </section>
+
+      <div id="tomorrow" class="hidden">
+        <div class="label">Tomorrow</div>
+        <div id="tomorrowList"></div>
+      </div>
+
+      <section class="mine">
+        <div class="sect-title">My tasks</div>
+        <div id="cats"></div>
+      </section>
+    </main>
+
+    <!-- HISTORY -->
+    <section id="historyView" class="hidden">
+      <div class="sect-title">History</div>
+      <div class="actions-top" style="margin-bottom:6px">
+        <button id="closeHistory" class="mini">Back</button>
+        <button id="clearHistory" class="mini danger">Clear</button>
+      </div>
+      <div id="historyList"></div>
+    </section>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

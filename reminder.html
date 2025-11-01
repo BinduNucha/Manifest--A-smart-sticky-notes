@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Reminder</title>
+  <style>
+    :root { --ink:#1b1b1b; --bg:#fff9c4; --dash:#d8cc79; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 system-ui, Segoe UI, Roboto; }
+    .box { padding:14px; height:100%; display:flex; flex-direction:column; gap:10px; }
+    .title { font-weight:800; font-size:16px; }
+    .card { border:1px dashed var(--dash); border-radius:10px; padding:10px; background:#fffceb; }
+    .row { display:flex; gap:8px; justify-content:flex-end; }
+    .btn { border:1px solid var(--dash); border-radius:8px; padding:6px 10px; background:#fff3a8; cursor:pointer; }
+    .big { font-size:15px; font-weight:700; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="title">⏰ Reminder</div>
+    <div id="text" class="card"></div>
+    <div class="row">
+      <button id="snooze5" class="btn">Snooze 5m</button>
+      <button id="done" class="btn big">Done ✓</button>
+      <button id="close" class="btn">Close</button>
+    </div>
+  </div>
+  <script src="reminder.js"></script>
+</body>
+</html>
